@@ -1,6 +1,27 @@
 <?php
 
+$allowOrigins = [
+	'manage.cc.loc', 'manage.capitalhost.ru'
+];
+$allowOrigin = '';
+$httpOrigin = $_SERVER['HTTP_ORIGIN'];
+
+foreach ($allowOrigins as $origin) {
+	if ($httpOrigin == 'https://'.$origin) {
+		header('Access-Control-Allow-Origin: *');
+	}
+}
+
+header('Access-Control-Allow-Headers: Content-Type');
+header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
+
+
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+	exit;
+}
+
 $secretKey = $_GET['secretKey'];
+
 
 if (!$secretKey) {
 	require_once __DIR__.'/../pages/404.html';
@@ -8,18 +29,12 @@ if (!$secretKey) {
 }
 
 
+
 require __DIR__.'/../vendor/autoload.php';
 
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__.'/../');
 $dotenv->load();
 
-function dd($d)
-{
-	echo '<pre>';
-	print_r($d);
-	echo '</pre>';
-	die;
-}
 
 class Tilda
 {
